@@ -1,12 +1,22 @@
 {
-  "name": "library",
-  "private": true,
-  "version": "0.0.0",
+  "name": "simp-lib",
+  "version": "0.0.5",
   "type": "module",
+  "files": [
+    "dist"
+  ],
+  "module": "./dist/simp-lib.es.js",
+  "main": "./dist/simp-lib.umd.js",
+  "exports": {
+    ".": {
+      "import": "./dist/simp-lib.es.js",
+      "require": "./dist/simp-lib.umd.js"
+    },
+    "./dist/style.css": "./dist/style.css",
+    "./dist/simp-lib.em.js": "./dist/simp-lib.em.js"
+  },
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "build": "vite build & node builds-scripts/build-embedded-library.js"
   },
   "dependencies": {
     "vue": "^3.2.45"

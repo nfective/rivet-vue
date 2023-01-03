@@ -1,5 +1,8 @@
-import { createApp } from 'vue'
-import './style.css'
 import App from './App.vue'
+import { createApp } from 'vue'
+import SimpleLib from 'simp-lib'
+import 'simp-lib/dist/style.css'
 
-createApp(App).mount('#app')
+const app = createApp(App)
+app.use(SimpleLib)
+app.mount('#app')
