@@ -3,20 +3,20 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + Vue</title>
+    <link type="text/css" rel="stylesheet" href="/css/style.css" />
+    <link type="text/css" rel="stylesheet" href="/css/rivet@2.2.0.css" />
+    <script src="/js/vue@3.2.45.js"></script>
+    <title>Rivet Vue</title>
   </head>
   <body>
     <div id="app">
+      <simple-box>I am a box</simple-box>
     </div>
-    <!-- <script src="/js/vue.global.prod.js"></script> -->
-    <!-- [Warning] Will complain about bare specificer if not used within   -->
-    <!--           /, ./, ../                                               -->
-    <!-- <script type="module" src="/src/main.js"></script> -->
-    <!--                                                                    -->
-    <!-- <script>
-      console.log(Vue)
-    </script> -->
-    <!-- <script type="module" src="/js/vue.runtime.global.prod.js"></script> -->
-    <script type="module" src="/app.js"></script>
   </body>
+  <script type="module" src="/app.js"></script>
+  <!-- <script type="module" src="src/main.js"></script> -->
+  <script src="js/rivet@2.2.0.js"></script>
+  <script>
+    Rivet.init()
+  </script>
 </html>

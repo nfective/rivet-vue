@@ -6,9 +6,9 @@ export default defineConfig({
   build: {
     lib: {
       entry: path.resolve(__dirname, "src/index.js"),
-      name: "simp-lib",
+      name: "rivet-vue",
       formats: ["es", "umd"],
-      fileName: (format) => `simp-lib.${ format }.js`
+      fileName: (format) => `rivet-vue.${ format }.js`
     },
     rollupOptions: {
       external: ["vue"],
@@ -17,9 +17,15 @@ export default defineConfig({
           vue: "Vue"
         }
       }
-    }
+    },
+    emptyOutDir: true,
+    // Do not sourcemap it otherwise the em version won't be build correctly
+    sourcemap: false
   },
   plugins: [
-    vue()
-  ],
+    vue({
+      isProduction: true,
+      reactivityTransform: true
+    })
+  ]
 })

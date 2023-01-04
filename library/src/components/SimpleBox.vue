@@ -1,11 +1,11 @@
 <script setup>
     const props = defineProps({
-        name: String
+        class: String
     })
 </script>
 
 <template>
-    <div class="classy">
+    <div class="classy" :class="props.class">
         <slot />
     </div>
 </template>

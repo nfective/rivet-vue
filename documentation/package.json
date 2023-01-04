@@ -9,7 +9,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "simp-lib": "^0.0.5",
+    "rivet-core": "^2.2.0",
+    "rivet-vue": "^0.0.27",
+    "simp-lib": "^0.0.8",
     "vue": "^3.2.45",
     "vue-library-temp": "^0.0.6"
   },

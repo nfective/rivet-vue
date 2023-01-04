@@ -2,9 +2,7 @@
 </script>
 
 <template>
-  <div>
-    <simple-box>Hello</simple-box>
-  </div>
+  <simple-box>Hello</simple-box>
 </template>
 
 <style scoped>

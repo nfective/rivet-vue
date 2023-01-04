@@ -4,11 +4,11 @@ import * as path from 'path'
 
 const cwd = process.cwd().replaceAll(/\\/g, '/')
 
-const read_file = 'dist/simp-lib.es.js'
+const read_file = 'dist/rivet-vue.es.js'
 
-const temporary_file = 'dist/simp-lib.es.tmp'
+const temporary_file = 'dist/rivet-vue.es.tmp'
 
-const embedded_file = 'dist/simp-lib.em.js'
+const embedded_file = 'dist/rivet-vue.em.js'
 
 // Delete file if it already exists
 const unlink = (file) => {

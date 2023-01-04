@@ -1,19 +1,19 @@
 {
-  "name": "simp-lib",
-  "version": "0.0.5",
+  "name": "rivet-vue",
+  "version": "0.0.29",
   "type": "module",
   "files": [
     "dist"
   ],
-  "module": "./dist/simp-lib.es.js",
-  "main": "./dist/simp-lib.umd.js",
+  "module": "./dist/rivet-vue.es.js",
+  "main": "./dist/rivet-vue.umd.js",
   "exports": {
     ".": {
-      "import": "./dist/simp-lib.es.js",
-      "require": "./dist/simp-lib.umd.js"
+      "import": "./dist/rivet-vue.es.js",
+      "require": "./dist/rivet-vue.umd.js"
     },
-    "./dist/style.css": "./dist/style.css",
-    "./dist/simp-lib.em.js": "./dist/simp-lib.em.js"
+    "./dist/rivet@2.2.0.css": "./dist/rivet@2.2.0.css",
+    "./dist/rivet@2.2.0.js": "./dist/rivet@2.2.0.js"
   },
   "scripts": {
     "build": "vite build & node builds-scripts/build-embedded-library.js"

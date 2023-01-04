@@ -1,8 +1,11 @@
 import App from './App.vue'
 import { createApp } from 'vue'
-import SimpleLib from 'simp-lib'
-import 'simp-lib/dist/style.css'
+import RivetVue from 'rivet-vue'
+import 'rivet-vue/dist/style.css'
+// import 'rivet-vue/dist/style.css'
+
+// Rivet.init()
 
 const app = createApp(App)
-app.use(SimpleLib)
+app.use(RivetVue)
 app.mount('#app')
