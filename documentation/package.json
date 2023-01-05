@@ -9,14 +9,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "rivet-core": "^2.2.0",
-    "rivet-vue": "^0.0.30",
-    "simp-lib": "^0.0.8",
-    "vue": "^3.2.45",
-    "vue-library-temp": "^0.0.6"
+    "rivet-vue": "^0.0.35",
+    "vue": "3.2.45"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^4.0.0",
-    "vite": "^4.0.0"
+    "@vitejs/plugin-vue": "4.0.0",
+    "vite": "4.0.4"
   }
 }

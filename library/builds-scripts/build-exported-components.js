@@ -125,19 +125,7 @@ export default {
 }
 `
 
-// const entry_file_content = 
-// `import ComponentA from './components/ComponentA.vue'
-
-// export default {
-//     install: (app, options) => {
-//         app.component('component-a', ComponentA)
-//     }
-// }
-// `
-
-//     fs.writeFileSync(`${ base_dir }/index.js`, entry_file_content)
-// }
-
+    fs.writeFileSync(`${ base_dir }/index.js`, entry_file_content)
 }
 
 export {

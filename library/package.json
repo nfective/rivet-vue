@@ -1,6 +1,6 @@
 {
   "name": "rivet-vue",
-  "version": "0.0.30",
+  "version": "0.0.35",
   "type": "module",
   "files": [
     "dist"
@@ -17,15 +17,17 @@
   },
   "scripts": {
     "build:embed": "node builds-scripts/build-embed-library.js",
-    "build:library": "npm run clean-up & vite build & node builds-scripts/build-library.js & npm run build:embed",
-    "build:va-library": "npm run clean-up & vite build & node builds-scripts/build-va-library.js & npm run build:embed",
+    "build:library": "npm run clean-up && node builds-scripts/build-library.js & vite build & npm run build:embed",
+    "build:va-library": "npm run clean-up && node builds-scripts/build-va-library.js & vite build & npm run build:embed",
     "clean-up": "node builds-scripts/clean-up.js"
   },
   "dependencies": {
-    "vue": "^3.2.45"
+    "@vueuse/core": "9.10.0",
+    "nanoid": "4.0.0",
+    "vue": "3.2.45"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^4.0.0",
-    "vite": "^4.0.0"
+    "@vitejs/plugin-vue": "4.0.0",
+    "vite": "4.0.4"
   }
 }
