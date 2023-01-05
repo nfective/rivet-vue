@@ -1,5 +1,8 @@
 import { createApp } from 'vue'
-import './style.css'
+import Router from './routing/router.js'
+// import './rivet@2.2.0.css'
 import App from './App.vue'
 
-createApp(App).mount('#app')
+const app = createApp(App)
+app.use(Router)
+app.mount('#app')
