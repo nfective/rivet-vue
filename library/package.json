@@ -17,8 +17,8 @@
   },
   "scripts": {
     "build:embed": "node builds-scripts/build-embed-library.js",
-    "build:library": "npm run clean-up && node builds-scripts/build-library.js && vite build && npm run build:embed",
-    "build:va-library": "npm run clean-up && node builds-scripts/build-va-library.js && vite build && npm run build:embed",
+    "build:library": "node builds-scripts/build-library.js && vite build && npm run build:embed",
+    "build:va-library": "node builds-scripts/build-va-library.js && vite build && npm run build:embed",
     "clean-up": "node builds-scripts/clean-up.js"
   },
   "dependencies": {
@@ -28,6 +28,7 @@
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "4.0.0",
+    "chokidar": "3.5.3",
     "vite": "4.0.4"
   }
 }

@@ -7,3 +7,7 @@
 ####           for your use situation. The default entry for rivet-vue can be either rivet-vue.es.js or rivet-vue.umd.js.
 ####           You may be wanting the rivet-vue.em.js which needs to be in a public directory. Also, make sure you are 
 ####           referencing the right file in rivet-vue/dist in the proper situation.
+
+####  Problem: Changes made in the library project are not being reflected in the tests project
+#### Solution: Run `npm run build:library` or `npm run build:va-library` as the tests project seems to not update. Not sure
+####           working on a plugin to automate this run the build script

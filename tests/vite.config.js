@@ -1,6 +1,8 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import * as path from 'path'
+import rebuilder from './plugins/rebuilder'
+
 
 const cwd = process.cwd().replaceAll('\\', '/')
 
@@ -12,6 +14,9 @@ export default defineConfig({
     port: 80
   },
   plugins: [
+    rebuilder({
+      linked_package_src: "rivet-vue/src"
+    }),
     vue()
   ],
   resolve: {
