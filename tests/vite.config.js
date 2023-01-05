@@ -15,7 +15,9 @@ export default defineConfig({
   },
   plugins: [
     rebuilder({
-      linked_package_src: "rivet-vue/src"
+      linked_project: "library",
+      linked_package_src: "rivet-vue/src/**/*",
+      reattach_delay: 10000,
     }),
     vue()
   ],

@@ -5,28 +5,73 @@
 import * as path from 'path'
 import chokidar from 'chokidar'
 import { exec } from 'child_process'
+import { watch } from 'fs'
 const cwd = process.cwd().replaceAll('\\', '/')
 
 const rebuildLibrary = (parameters) => {
     console.log("Library changed")
     // exec(`npm unlink rivet-vue`, (err, output) => console.log(err))
     // exec(`npm link rivet-vue`, (err, output) => console.log(err))
-    exec(`cd ../library && npm run build:test`, (error, output) => { console.log(error) })
+    exec(`cd ../${ parameters.linked_project } & npm run build:library`, (error, output) => { console.log(error) })
+    exec(`npm link rivet-vue`, (err, output) => console.log(err))
 }
 
 const rebuilder = (parameters) => {
     return {
         configureServer(server) {
+
             parameters = JSON.parse(JSON.stringify(parameters))
+
+            let timeout
+
+            const debounce = (func, delay) => {
+                if(timeout) console.log("Request ignored")
+                if(timeout) return
+                timeout = true
+                console.log(timeout)
+                func()
+                setTimeout(() => {
+                    timeout = false
+                    console.log('Reattaching watcher')
+                    setWatchers()
+                }, delay)
+            }
+            
+            let watcher = null
+
+            const setWatchers = () => {
+                if(!watcher) {
+                    watcher = chokidar.watch('../library/src', { ignoreInitial: true })
+                    watcher
+                        .on('change', () => setWatchers())
+                        .on('unlink', () => setWatchers())
+                }
+                else
+                {
+                    watcher.close()
+                    watcher = null
+                    console.log('Closed watcher')
+                    //debounce(setWatchers, parameters.reattach_delay)
+                    setWatchers()
+                }
+            }
+
+            setWatchers()
 
             // No need to check if linked project exists in the plugin because the
             // the terminal will automatically throw an error if the project isn't
             // linked
-            const watched_project = chokidar.watch(path.join(cwd, `node_modules/${ parameters.linked_package_src }`), { ignoreInitial: true })
+            // const watched_project = chokidar.watch([`${ cwd }/../${ parameters.linked_project }/src`], { ignoreInitial: true })
 
-            watched_project.on('change', () => rebuildLibrary(parameters) )
+            // // The build scripts need time to execute so throttle the updates it
+            // watched_project.on('change', (change) => { throttle(rebuildLibrary.bind(null, parameters), 4000), console.log(change) })
 
-            watched_project.on('unlink', () => rebuildLibrary(parameters))
+            // watched_project.on('unlink', (change) => { throttle(rebuildLibrary.bind(null, parameters), 4000), console.log(change) })
+
+            // const watched_project = chokidar.watch(['./../library/src/**/*'], { ignoreInitial: true, followSymlinks: true })
+
+            // watched_project.on('change', (change) => { console.log(change); exec(`cd ../library & npm run build:library`, (error, output) => { console.log(error) }) })
+
         }
     }
 }
