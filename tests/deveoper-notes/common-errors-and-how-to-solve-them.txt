@@ -1,0 +1,9 @@
+####  Problem: rivet-vue becomes an undefined export 
+#### Solution: re-run `npm link rivet-vue`
+##### Not sure what causes this but sometimes a project will become disconnected
+
+####  Problem: Some package is does not have an export but is a bare specificer and needs to be defined as either /, ./, ../
+#### Solution: Make sure you are using the right file and following the instructions in the documentation project README.md 
+####           for your use situation. The default entry for rivet-vue can be either rivet-vue.es.js or rivet-vue.umd.js.
+####           You may be wanting the rivet-vue.em.js which needs to be in a public directory. Also, make sure you are 
+####           referencing the right file in rivet-vue/dist in the proper situation.
