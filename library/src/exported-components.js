@@ -1,5 +1,5 @@
-import SimpleBox from './components/SimpleBox.vue'
+import TestComponent from './components/TestComponent.vue'
 
 export {
-	SimpleBox
+	TestComponent
 }
