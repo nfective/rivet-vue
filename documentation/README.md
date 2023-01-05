@@ -1,0 +1,1 @@
+The documentation project should ONLY use rivet-vue from the npm package. NEVER use npm link
