@@ -1,0 +1,1 @@
+The tests project uses cypress for frontend ux/ui testing
