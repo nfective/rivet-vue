@@ -1,1 +1,3 @@
-<template></template>
+<template>
+  <test-component></test-component>
+</template>

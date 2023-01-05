@@ -1,5 +1,8 @@
 export default [
 	{ name: "Index", path: "/", component: () => import('#/Index.vue')},
+]
+
+/*
 	{ name: "Accordion", path: "/accordion", component: () => import('#/Accordion.vue') },
 	{ name: "Alert", path: "/alert", component: () => import('#/Alert.vue') },
 	{ name: "Avatar", path: "/avatar", component: () => import('#/Avatar.vue') },
@@ -40,4 +43,4 @@ export default [
 	{ name: "Text Region", path: "/text-box", component: () => import('#/TextBox.vue') },
 	{ name: "Timeline", path: "/timeline", component: () => import('#/Timeline.vue') },
 	{ name: "Catch All", path: "/:catchAll(.*)", component: () => import('#/CatchAll.vue')}
-]
+*/

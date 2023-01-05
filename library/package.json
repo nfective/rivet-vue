@@ -13,7 +13,7 @@
       "require": "./dist/rivet-vue.umd.js"
     },
     "./dist/rivet@2.2.0.css": "./dist/rivet@2.2.0.css",
-    "./dist/rivet@2.2.0.js": "./dist/rivet@2.2.0.js"
+    "./dist/rivet@2.2.0.es.js": "./dist/rivet@2.2.0.es.js"
   },
   "scripts": {
     "build:embed": "node builds-scripts/build-embed-library.js",
@@ -24,6 +24,7 @@
   "dependencies": {
     "@vueuse/core": "9.10.0",
     "nanoid": "4.0.0",
+    "rivet-core": "^2.2.0",
     "vue": "3.2.45"
   },
   "devDependencies": {
