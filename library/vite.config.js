@@ -44,5 +44,10 @@ export default defineConfig({
       '@': path.join(cwd, './src/components'),
       '?': path.join(cwd, './src/vue-additions'),
     }
+  },
+  server: {
+    host: true,
+    https: false,
+    port: 5173
   }
 })
