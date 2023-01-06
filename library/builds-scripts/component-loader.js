@@ -1,3 +1,4 @@
+import fs from 'fs'
 import { fileNameFromPath, trimEndingCharacters } from "./utilities/strings/string-modifiers.js"
 import filesFinder from "./utilities/directories/files-finder.js"
 
@@ -53,25 +54,37 @@ const componentsLoader = (components_directories = [''], component_prefixes = ['
     // Components to be exported
     let components = {}
 
-    components_paths.forEach(component_path => {
-
-        const file_name = fileNameFromPath(component_path)
+    let components_path_length = components_paths.length
+    
+    for(let i = 0; i < components_path_length; i++)
+    {
+        const file_name = fileNameFromPath(components_paths[i])
 
         const has_component_file_prefix = includesPrefix(component_prefixes, file_name)
 
-        if(has_component_file_prefix === -1) return
+        // Skip iteration if false
+        if(has_component_file_prefix === false) continue
 
         const has_component_file_extension = includesExtension(component_extensions, file_name)
 
-        if(has_component_file_extension === -1) return
+        // Skip iteration if false
+        if(has_component_file_extension === false) continue
+
+        // Skip iteration if file is empty
+        if(fs.readFileSync(components_paths[i], { encoding:'utf8', flag:'r'}) === '') continue
 
         const component_name = file_name.substring(file_name, file_name.lastIndexOf('.'))
 
-        // Component path import neededs to be relative to the file with the install method which is index.js
-        component_path = component_path.substring(component_path.indexOf('src')).replace('src', '.')
-
-        components[component_name] = `import ${ component_name } from '${ component_path }'`
-    })
+        // Check and prevent duplicate components
+        if(component_name in components) {
+            console.log(`Component ${ component_name } is a duplicate component`)
+            continue
+        }
+        else
+        {
+            components[component_name] = `import ${ component_name } from '${ components_paths[i] }'`
+        }
+    }
 
     return components
 }
@@ -92,11 +105,16 @@ const componentLoader = (components, component_path, component_prefixes = ['Rvt'
 
     const has_component_file_prefix = includesPrefix(component_prefixes, file_name)
 
-    if(has_component_file_prefix === -1) return components
+    if(has_component_file_prefix === false) return components
 
     const has_component_file_extension = includesExtension(component_extensions, file_name)
 
-    if(has_component_file_extension === -1) return components
+    if(has_component_file_extension === false) return components
+
+    console.log(components)
+
+    // Skip adding file if it is empty
+    if(fs.readFileSync(component_path, { encoding:'utf8', flag:'r'}) === '') return components
 
     // Component path import neededs to be relative to the file with the install method which is index.js
     component_path = component_path.substring(component_path.indexOf('src')).replace('src', '.')

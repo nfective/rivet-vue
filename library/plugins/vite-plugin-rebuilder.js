@@ -24,7 +24,12 @@ const loadComponents = (directories, component_prefixes, component_extensions) =
 
 const loadComponent = (component_path, component_prefixes, component_extensions) => {
 
+    // Prevents rebuilding of component file if no changes were made
+    const old_components = JSON.stringify(components)
+
     components = componentLoader(components, component_path, component_prefixes, component_extensions)
+
+    if(old_components === JSON.stringify(components)) return
 
     buildEntryFile(components)
 }
@@ -71,19 +76,27 @@ const rebuilder = (configs) => {
 
                 configs = JSON.parse(JSON.stringify(configs))
                 
+                const start = performance.now()
+
+                // Function is slow 
                 loadComponents(configs.watched_directories, ['Rvt'], ['vue'])
 
                 rebuild()
+                const stop = performance.now()
+
+                console.log(`Took ${ ((stop - start) / 1000).toFixed(3) }s to load components`)
 
                 watched_directories = configs.watched_directories.map(directory => directory.replaceAll('\\', '/'))
 
                 watcher = chokidar.watch(watched_directories, { ignoreInitial: true })
                 watcher
-                    // Attempt to remove component before adding it again
+                    // Doesn't trigger on addition directory
                     .on('add', (path) => {
+                        const start = performance.now()
                         try
                         {
-                            loadComponent(`${ cwd }/${ path.replaceAll('\\', '/') }`)
+                            components = loadComponent(`${ cwd }/${ path.replaceAll('\\', '/') }`)
+
                             rebuild()
                             should_rebuild = false
                         }
@@ -91,14 +104,21 @@ const rebuilder = (configs) => {
                         {
                             server.restart()
                         }
+                        const stop = performance.now()
+                        console.log(`Took ${ ((stop - start) / 1000).toFixed(3) }s to load components`)
                     })
+                    // Doesn't trigger on removing directory
                     .on('unlink', (path) => {
 
                         // Flip flag once logic is executed
                         if(should_rebuild === false) return should_rebuild = true
 
+                        const start = performance.now()
                         removeComponent(`${ cwd }/${ path.replaceAll('\\', '/') }`)
                         rebuild()
+
+                        const stop = performance.now()
+                        console.log(`Took ${ ((stop - start) / 1000).toFixed(3) }s to load components`)
                     })
             }
             catch
