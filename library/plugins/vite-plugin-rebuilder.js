@@ -7,39 +7,32 @@ import { execSync } from 'child_process'
 
 const cwd = process.cwd().replaceAll('\\', '/')
 
-// Flag to tell that the esm file had been rebuilt in the add watcher and not to re-rerun the build in the unlink watcher
-let should_rebuild
+// When a file is moved, the add watcher fires, then the unlink watcher fire immediately after.
+// To prevent creating an incorrect index.js, a setTimeout is used
+let file_timeout = false
+
+// Flag is a debounced timer to prevent rapid rebuilding. To produce a
+// a esm build it takes around 1.5s at the moment, rapid changes would
+// overwhelm the system
+let debounce_rebuild
 
 let watched_directories
 let watcher
 // object of components where the 
 let components
 
-const loadComponents = (directories, component_prefixes, component_extensions) => {
-
+const loadComponents = async (directories, component_prefixes, component_extensions) => {
     components = componentsLoader(directories, component_prefixes, component_extensions)
-
     buildEntryFile(components)
 }
 
 const loadComponent = (component_path, component_prefixes, component_extensions) => {
-
-    // Prevents rebuilding of component file if no changes were made
-    const old_components = JSON.stringify(components)
-
     components = componentLoader(components, component_path, component_prefixes, component_extensions)
-
-    if(old_components === JSON.stringify(components)) return false
-
     buildEntryFile(components)
-
-    return true
 }
 
 const removeComponent = (component_path) => {
-
     components = componentRemover(components, component_path)
-
     buildEntryFile(components)
 }
 
@@ -65,9 +58,28 @@ const buildEntryFile = (components) => {
     fs.writeFileSync(`${ cwd }/src/index.js`, entry_file_content)
 }
 
-const rebuild = () => execSync('npm run build', (error, message) => { if(error) console.log(error) })
+// Debounce rebuild to prevent rapid execution of vite build which could
+// result in an incorrect state
+const rebuild = () => {
 
-const rebuilder = (configs) => {
+    if(debounce_rebuild)
+    {
+        clearTimeout(debounce_rebuild)
+        debounce_rebuild = setTimeout(() => {
+            execSync('npm run build', (error, message) => { if(error) console.log(error) })
+            debounce_rebuild = null
+        }, 500)
+    }
+    else
+    {
+        debounce_rebuild = setTimeout(() => {
+            debounce_rebuild = null
+        }, 500)
+        execSync('npm run build', (error, message) => { if(error) console.log(error) })
+    }
+}
+
+const rebuilder = async (configs) => {
     // Do we need dist or just index.js with install?
     return {
         configureServer(server) {
@@ -77,74 +89,45 @@ const rebuilder = (configs) => {
                 cleanBuild()
 
                 configs = JSON.parse(JSON.stringify(configs))
-                
-                const start = performance.now()
 
                 // Function is slow 
                 loadComponents(configs.watched_directories, ['Rvt'], ['vue'])
 
                 rebuild()
-                const stop = performance.now()
-
-                console.log(`Took ${ ((stop - start) / 1000).toFixed(3) }s to load components`)
 
                 watched_directories = configs.watched_directories.map(directory => directory.replaceAll('\\', '/'))
 
                 watcher = chokidar.watch(watched_directories, { ignoreInitial: true })
                 watcher
                     // Doesn't trigger on addition directory
-                    .on('add', (path) => {
-                        console.log("Add Called")
-                        const start = performance.now()
+                    .on('add', async (path) => {
+                        file_timeout = true
+                        setTimeout(() => {
+                            file_timeout = false
+                        }, 200)
+
                         try
                         {
-                            should_rebuild = loadComponent(`${ cwd }/${ path.replaceAll('\\', '/') }`)
-
+                            loadComponent(`${ cwd }/${ path.replaceAll('\\', '/') }`)
                             rebuild()
                         }
                         catch
                         {
                             server.restart()
                         }
-                        const stop = performance.now()
-                        //console.log(`Took ${ ((stop - start) / 1000).toFixed(3) }s to load components`)
                     })
                     .on('change', (path) => {
                         console.log("Change Called")
-                        const start = performance.now()
-                        try
-                        {
-                            // Doesnt need to rebuild entry file if the file only changes
-                            // Does need to rebuild file if a new entry is added
-                            loadComponent(`${ cwd }/${ path.replaceAll('\\', '/') }`)
-
-                            // Not running correctly?
-                            if(should_rebuild) rebuild()
-                        }
-                        catch
-                        {
-                            server.restart()
-                        }
-                        const stop = performance.now()
-                        //console.log(`Took ${ ((stop - start) / 1000).toFixed(3) }s to load components`)
-                        console.log(components)          
+                        rebuild()
                     })
                     // Doesn't trigger on removing directory
                     .on('unlink', (path) => {
                         console.log("Unlink Called")
-                        console.log("Should rebuild ", should_rebuild)
-                        // The flag exists because if a file is moved, the add function triggers then the
-                        // unlink flag triggers. To prevent two rebuilds from being triggered this flag
-                        // exists
-                        if(should_rebuild === false) return should_rebuild = true
-
-                        const start = performance.now()
-
-                        removeComponent(`${ cwd }/${ path.replaceAll('\\', '/') }`)
-                        //rebuild()
-
-                        const stop = performance.now()
-                        //console.log(`Took ${ ((stop - start) / 1000).toFixed(3) }s to load components`)
+                        // After a file is added, there is a timeout period 
+                        if(!file_timeout) {
+                            removeComponent(`${ cwd }/${ path.replaceAll('\\', '/') }`)
+                            rebuild()
+                        }
                     })
             }
             catch
