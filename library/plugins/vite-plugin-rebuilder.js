@@ -99,7 +99,7 @@ const rebuilder = async (configs) => {
 
                 watcher = chokidar.watch(watched_directories, { ignoreInitial: true })
                 watcher
-                    // Doesn't trigger on addition directory
+                    // Doesn't trigger on addition of a directory
                     .on('add', async (path) => {
                         file_timeout = true
                         setTimeout(() => {
@@ -117,12 +117,10 @@ const rebuilder = async (configs) => {
                         }
                     })
                     .on('change', (path) => {
-                        console.log("Change Called")
                         rebuild()
                     })
                     // Doesn't trigger on removing directory
                     .on('unlink', (path) => {
-                        console.log("Unlink Called")
                         // After a file is added, there is a timeout period 
                         if(!file_timeout) {
                             removeComponent(`${ cwd }/${ path.replaceAll('\\', '/') }`)

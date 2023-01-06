@@ -38,7 +38,7 @@ const includesExtension = (extensions, file_name) => {
     }
 }
 
-const buildExportedComponents = (compile_directories = [''], compile_prefixes = ['Rvt'], compile_extensions = ['vue']) => {
+const buildExportedComponents = (compile_directories = [''], component_prefixes = ['Rvt'], component_extensions = ['vue']) => {
 
     // Specify base directory to look from
     const base_dir = `${ cwd }/src`
@@ -48,26 +48,38 @@ const buildExportedComponents = (compile_directories = [''], compile_prefixes = 
     
     // Components to be exported
     let components = {}
-    
-    components_paths.forEach(component_path => {
 
-        const file_name = fileNameFromPath(component_path)
+    let components_path_length = components_paths.length
 
-        const has_component_file_prefix = includesPrefix(compile_prefixes, file_name)
+    for(let i = 0; i < components_path_length; i++)
+    {
+        const file_name = fileNameFromPath(components_paths[i])
 
-        if(has_component_file_prefix === -1) return
+        const has_component_file_prefix = includesPrefix(component_prefixes, file_name)
 
-        const has_component_file_extension = includesExtension(compile_extensions, file_name)
+        // Skip iteration if false
+        if(has_component_file_prefix === false) continue
 
-        if(has_component_file_extension === -1) return
+        const has_component_file_extension = includesExtension(component_extensions, file_name)
+
+        // Skip iteration if false
+        if(has_component_file_extension === false) continue
+
+        // Skip iteration if file is empty
+        if(fs.readFileSync(components_paths[i], { encoding:'utf8', flag:'r'}) === '') continue
 
         const component_name = file_name.substring(file_name, file_name.lastIndexOf('.'))
 
-        // Component path import neededs to be relative to the file with the install method which is index.js
-        component_path = component_path.substring(component_path.indexOf('src')).replace('src', '.')
-
-        components[component_name] = `import ${ component_name } from '${ component_path }'`
-    })
+        // Check and prevent duplicate components
+        if(component_name in components) {
+            console.log(`Component ${ component_name } is a duplicate component`)
+            continue
+        }
+        else
+        {
+            components[component_name] = `import ${ component_name } from '${ components_paths[i] }'`
+        }
+    }
 
     // Import string
     let import_string = ''
