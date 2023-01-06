@@ -1,18 +1,18 @@
 import * as fs from 'fs'
 
-const cwd = process.cwd()
+const cwd = process.cwd().replaceAll('\\', '/')
 
 const cleanBuild = () => {
 
     try {
-        if(fs.existsSync(`${ cwd }\\src\\exported-components.js`))
+        if(fs.existsSync(`${ cwd }/src/exported-components.js`))
         {
-            fs.unlinkSync(`${ cwd }\\src\\exported-components.js`)
+            fs.unlinkSync(`${ cwd }/src/exported-components.js`)
         }
     
-        if(fs.existsSync(`${ cwd }\\src\\index.js`))
+        if(fs.existsSync(`${ cwd }/src/index.js`))
         {
-            fs.unlinkSync(`${ cwd }\\src\\index.js`)
+            fs.unlinkSync(`${ cwd }/src/index.js`)
         }
     }
     catch(e) {

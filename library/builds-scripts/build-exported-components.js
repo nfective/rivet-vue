@@ -42,9 +42,6 @@ const buildExportedComponents = (compile_directories = [''], compile_prefixes = 
 
     // Specify base directory to look from
     const base_dir = `${ cwd }/src`
-    
-    // Specify directories to compile components from
-    compile_directories = compile_directories
 
     // Specify base directory
     const components_paths = filesFinder(base_dir, compile_directories)
@@ -103,23 +100,11 @@ const buildEntryFile = () => {
     const entry_file_content = 
 `import * as components from './exported-components.js'
 
-const pascalCaseToHyphens = (string) => string
-// Look for long acronyms and filter out the last letter
-.replace(/([A-Z]+)([A-Z][a-z])/g, ' $1-$2')
-// Look for lower-case letters followed by upper-case letters
-.replace(/([a-z\d])([A-Z])/g, '$1-$2')
-// Look for lower-case letters followed by numbers
-.replace(/([a-zA-Z])(\d)/g, '$1-$2')
-// Remove any white space left around the word
-.trim()
-// Force lowercase on component names
-.toLowerCase()
-
 export default {
     install: (app, options) => {
         for(const [key, value] of Object.entries(components))
         {
-            app.component(pascalCaseToHyphens(key), value)
+            app.component(key, value)
         }
     }
 }

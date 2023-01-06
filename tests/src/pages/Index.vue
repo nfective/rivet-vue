@@ -1,3 +1,3 @@
 <template>
-  <test-component></test-component>
+  <test-componet></test-componet>
 </template>
