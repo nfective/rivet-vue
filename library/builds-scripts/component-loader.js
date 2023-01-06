@@ -111,8 +111,6 @@ const componentLoader = (components, component_path, component_prefixes = ['Rvt'
 
     if(has_component_file_extension === false) return components
 
-    console.log(components)
-
     // Skip adding file if it is empty
     if(fs.readFileSync(component_path, { encoding:'utf8', flag:'r'}) === '') return components
 

@@ -29,9 +29,11 @@ const loadComponent = (component_path, component_prefixes, component_extensions)
 
     components = componentLoader(components, component_path, component_prefixes, component_extensions)
 
-    if(old_components === JSON.stringify(components)) return
+    if(old_components === JSON.stringify(components)) return false
 
     buildEntryFile(components)
+
+    return true
 }
 
 const removeComponent = (component_path) => {
@@ -92,33 +94,57 @@ const rebuilder = (configs) => {
                 watcher
                     // Doesn't trigger on addition directory
                     .on('add', (path) => {
+                        console.log("Add Called")
                         const start = performance.now()
                         try
                         {
-                            components = loadComponent(`${ cwd }/${ path.replaceAll('\\', '/') }`)
+                            should_rebuild = loadComponent(`${ cwd }/${ path.replaceAll('\\', '/') }`)
 
                             rebuild()
-                            should_rebuild = false
                         }
                         catch
                         {
                             server.restart()
                         }
                         const stop = performance.now()
-                        console.log(`Took ${ ((stop - start) / 1000).toFixed(3) }s to load components`)
+                        //console.log(`Took ${ ((stop - start) / 1000).toFixed(3) }s to load components`)
+                    })
+                    .on('change', (path) => {
+                        console.log("Change Called")
+                        const start = performance.now()
+                        try
+                        {
+                            // Doesnt need to rebuild entry file if the file only changes
+                            // Does need to rebuild file if a new entry is added
+                            loadComponent(`${ cwd }/${ path.replaceAll('\\', '/') }`)
+
+                            // Not running correctly?
+                            if(should_rebuild) rebuild()
+                        }
+                        catch
+                        {
+                            server.restart()
+                        }
+                        const stop = performance.now()
+                        //console.log(`Took ${ ((stop - start) / 1000).toFixed(3) }s to load components`)
+                        console.log(components)          
                     })
                     // Doesn't trigger on removing directory
                     .on('unlink', (path) => {
-
-                        // Flip flag once logic is executed
+                        console.log("Unlink Called")
+                        console.log("Should rebuild ", should_rebuild)
+                        // The flag exists because if a file is moved, the add function triggers then the
+                        // unlink flag triggers. To prevent two rebuilds from being triggered this flag
+                        // exists
                         if(should_rebuild === false) return should_rebuild = true
 
                         const start = performance.now()
+
                         removeComponent(`${ cwd }/${ path.replaceAll('\\', '/') }`)
-                        rebuild()
+                        //rebuild()
 
                         const stop = performance.now()
-                        console.log(`Took ${ ((stop - start) / 1000).toFixed(3) }s to load components`)
+                        //console.log(`Took ${ ((stop - start) / 1000).toFixed(3) }s to load components`)
                     })
             }
             catch
