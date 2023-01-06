@@ -16,7 +16,7 @@
     "./dist/rivet@2.2.0.es.js": "./dist/rivet@2.2.0.es.js"
   },
   "scripts": {
-    "dev": "vite dev",
+    "dev": "vite",
     "build": "vite build",
     "build:embed": "node builds-scripts/build-embed-library.js",
     "build:library": "node builds-scripts/build-library.js && vite build && npm run build:embed",

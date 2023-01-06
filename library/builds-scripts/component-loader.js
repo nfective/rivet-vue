@@ -112,13 +112,7 @@ const componentRemover = (components, component_path) => {
 
     const component_name = file_name.substring(file_name, file_name.lastIndexOf('.'))
 
-    if(component_name in components) {
-        // Only remove if the paths are the same
-        if(components[component_name].includes('./' + component_path.substring(component_path.indexOf('src/') + 4)))
-        {
-            delete components[component_name]
-        }
-    }
+    if(component_name in components) delete components[component_name]
 
     return components
 }

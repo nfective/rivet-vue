@@ -1,4 +1,4 @@
-import fs, { watch } from 'fs'
+import fs from 'fs'
 import * as path from 'path'
 import chokidar from 'chokidar'
 import cleanBuild from './../builds-scripts/clean-up.js'
@@ -6,6 +6,9 @@ import { componentsLoader, componentRemover, componentLoader } from './../builds
 import { execSync } from 'child_process'
 
 const cwd = process.cwd().replaceAll('\\', '/')
+
+// Flag to tell that the esm file had been rebuilt in the add watcher and not to re-rerun the build in the unlink watcher
+let should_rebuild
 
 let watched_directories
 let watcher
@@ -66,36 +69,30 @@ const rebuilder = (configs) => {
                 cleanBuild()
 
                 configs = JSON.parse(JSON.stringify(configs))
-
-                watched_directories = configs.watched_directories.map(directory => directory.replaceAll('\\', '/'))
                 
                 loadComponents(configs.watched_directories, ['Rvt'], ['vue'])
 
                 rebuild()
 
+                watched_directories = configs.watched_directories.map(directory => directory.replaceAll('\\', '/'))
+
                 watcher = chokidar.watch(watched_directories, { ignoreInitial: true })
                 watcher
                     // Attempt to remove component before adding it again
                     .on('add', (path) => {
-                        console.log("Add")
-                        const start = performance.now()
+
                         loadComponent(`${ cwd }/${ path.replaceAll('\\', '/') }`)
                         rebuild()
-
-                        const stop = performance.now()
-
-                        console.log(`${ (stop - start).toFixed(3) }ms`)
+                        should_rebuild = false
                     })
                     .on('unlink', (path) => {
-                        console.log("Unlink")
-                        const start = performance.now()
+
+                        // Flip flag once logic is executed
+                        if(should_rebuild === false) return should_rebuild = true
+
                         removeComponent(`${ cwd }/${ path.replaceAll('\\', '/') }`)
                         rebuild()
-                        const stop = performance.now()
-
-                        console.log(`${ (stop - start).toFixed(3) }ms`)
                     })
-                    // Because an add can be considered an change, only watch for change
             }
             catch
             {
