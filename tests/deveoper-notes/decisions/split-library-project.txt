@@ -1,0 +1,6 @@
+Originally the idea was to have the documentation, library, and tests in one project however this posed several problems.
+ 1. When building the library it included the test and documentation components in the build. These could've been moved 
+    outside the src folder but it still left other problems. Like when building, would include the src/main.js and the
+    index.html from the root directory. Another problem was not being able to show how rivet-vue could be used as an 
+    embedded library directly in the html. The final decision was to use the documentation project as the embedded 
+    library version and have the tests project as the esm version that you would get from npm.

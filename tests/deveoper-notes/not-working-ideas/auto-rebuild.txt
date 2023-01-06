@@ -1,0 +1,8 @@
+  Problem: When a component is updated in the library project the command `npm run build:library` has
+           to be run for it to be reflected in the tests project. Apparently, npm link creates
+           symbolic references to the project but the dist folder must be updated for the changes
+           to be reflected
+ Solution: Create a vite plugin in the tests project so that whenever there was a change in the library
+           project it would be immediately be rebuilt. The problem is once there was an update, the
+           watcher triggered a rebuild, which would then another rebuild, etc... creating an infinite
+           loop even if the watcher wasn't watching the directory specifically 
