@@ -12,7 +12,7 @@
         <div class="rvt-dropdown__menu" id="dropdownDefault" hidden data-rvt-dropdown-menu>
             <a href="#">Item one</a>
             <a href="#" aria-current="page">Item two</a>
-            <a href="#">Item thre</a>
+            <a href="#">Item three</a>
         </div>
     </div>
 </template>

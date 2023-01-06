@@ -16,26 +16,25 @@ const rebuildLibrary = (parameters) => {
     exec(`npm link rivet-vue`, (err, output) => console.log(err))
 }
 
+let timeout = false
+
+const debounce = (func, delay) => {
+    if(timeout) console.log("Request ignored")
+    console.log(timeout)
+    if(timeout) return
+    timeout = true
+    setTimeout(() => {
+        timeout = false
+        func()
+        console.log('Reattaching watcher')
+    }, delay)
+}
+
 const rebuilder = (parameters) => {
     return {
         configureServer(server) {
 
             parameters = JSON.parse(JSON.stringify(parameters))
-
-            let timeout
-
-            const debounce = (func, delay) => {
-                if(timeout) console.log("Request ignored")
-                if(timeout) return
-                timeout = true
-                console.log(timeout)
-                func()
-                setTimeout(() => {
-                    timeout = false
-                    console.log('Reattaching watcher')
-                    setWatchers()
-                }, delay)
-            }
             
             let watcher = null
 
@@ -51,8 +50,8 @@ const rebuilder = (parameters) => {
                     watcher.close()
                     watcher = null
                     console.log('Closed watcher')
-                    //debounce(setWatchers, parameters.reattach_delay)
-                    setWatchers()
+                    debounce(setWatchers, parameters.reattach_delay)
+                    //setWatchers()
                 }
             }
 
