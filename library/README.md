@@ -100,3 +100,8 @@ File: index.html
     </body>
 </html>
 ```
+
+## Side note
+#### If you run this project with `npm run dev` you will get a warning about it not being able to auto-determine entry
+#### point. This can be ignored. This project needs to run in a separate terminal then the one used for tests for
+#### hot-reloading to work

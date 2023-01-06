@@ -66,6 +66,7 @@ const rebuilder = (configs) => {
         configureServer(server) {
             try
             {
+
                 cleanBuild()
 
                 configs = JSON.parse(JSON.stringify(configs))
@@ -80,10 +81,16 @@ const rebuilder = (configs) => {
                 watcher
                     // Attempt to remove component before adding it again
                     .on('add', (path) => {
-
-                        loadComponent(`${ cwd }/${ path.replaceAll('\\', '/') }`)
-                        rebuild()
-                        should_rebuild = false
+                        try
+                        {
+                            loadComponent(`${ cwd }/${ path.replaceAll('\\', '/') }`)
+                            rebuild()
+                            should_rebuild = false
+                        }
+                        catch
+                        {
+                            server.restart()
+                        }
                     })
                     .on('unlink', (path) => {
 

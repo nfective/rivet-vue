@@ -1,3 +1,4 @@
 <template>
-  <test-componet></test-componet>
+  <test-component></test-component>
+  <rvt-test-component></rvt-test-component>
 </template>
